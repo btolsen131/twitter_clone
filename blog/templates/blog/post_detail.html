@@ -7,9 +7,13 @@
         <div class="article-metadata">
         <a class="mr-2" href="#">{{ object.author }}</a>
         <small class="text-muted">{{ object.date_posted }}</small>
+        {% if object.author == user %}
+            <a class="btn btn-sm mt-1 mb-1 btn-outline-danger" href="{% url 'post-delete' object.id %}">Delete</a>
+        {% endif %}
         </div>
         <p class="article-content">{{ object.content }}</p>
     </div>
+
 </article>
     
 {% endblock content %}

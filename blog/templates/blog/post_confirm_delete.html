@@ -1,0 +1,25 @@
+{% extends "blog/base.html" %}
+
+{% block content %}    
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Delete Post</legend>
+                <h2> Are you sure want to delete this post?</h2>
+                <article class="border border-danger">
+                    <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
+                    <div class="article-metadata">
+                        <a class="mr-2" href="#">{{ object.author }}</a>
+                        <small class="text-muted">{{ object.date_posted }}</small>
+                    </div>
+                    <p class="text-center mt-1">{{ object.content }}</p>
+                </article>
+            </fieldset>
+            <div class="form-group mt-2">
+                <button class="btn btn-outline-danger" type="submit"> Yes, Delete Post </button>
+                <a class="btn btn-outline-info" href="{% url 'post-detail' object.id %}"> Cancel</a>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
