@@ -1,4 +1,32 @@
 {% extends "blog/base.html" %}
 {% block content %}    
     <h1>About Page</h1>
+    <div class="content-section">
+        <h4>About this project</h4>
+        <p> 
+            This is a small portfolio project created by Brian Olsen (Username: bto131). 
+            This project is a small reproduction of the popular social networking website, Twitter.
+            Unlike the current Twitter, this reproduction focuses on the essence of what made the website good,
+            the need to condense thoughts down to 140 characters. In this implementation, I have brought back the 
+            original character limit and removed the media sharing functionality. The end result? Straight to the point
+            text based social networking. 
+        </p>
+        <h4>How is it made?</h4>
+        <p> 
+            This project is built primarily using Django, a popular Python framework. The website design was created
+            using Bootstrap classes. Currently, the website uses a local SQLite database to store the User and Post data.
+            I am planning to upgrade the database to MySQL or PostgreSQL if this project is made active online.
+        </p>
+        <h4> About the creator</h4>
+        <p>
+            My name is Brian Olsen, and I am a self-taught full stack developer. I have experience with Python(Flask and Django), 
+            R, SQL, JavaScript(React and NodeJS), HTML and CSS. While I spend my spare time learning and developing my programming skills,
+            my day-to-day work is in the financial services industry. I am currently the Operations Manager of one of the world's largest 
+            Quantitative Asset Management firms. This background has provided a strong analytical mindset and improved my decision making
+            and problem solving skills.  
+        </p>
+        <p>
+            If you wish to contact me, please feel free to reach out <a href="https://www.linkedin.com/in/briantolsen/">here</a>. 
+        </p>
+    </div>
 {% endblock content %}
