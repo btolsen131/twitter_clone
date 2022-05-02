@@ -3,12 +3,19 @@ from .models import Post
 from django.views.generic import ListView, DetailView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 def home(request):
     context = {
         'posts':Post.objects.all()
     }
     return render(request, 'blog/home.html', context) 
+
+def LikeView(request, pk):
+    post = get_object_or_404(Post, id=request.POST.get('post_id'))
+    post.likes.add(request.user)
+    return HttpResponseRedirect(reverse('post-detail', args=[str(pk)]))
 
 class PostListView(ListView):
     model = Post
@@ -29,6 +36,7 @@ class UserPostListView(ListView):
 
 class PostDetailView(DetailView):
     model = Post
+    
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post

@@ -13,7 +13,10 @@
         </div>
         <p class="article-content">{{ object.content }}</p>
     </div>
-
+    <form action="{% url 'like_post' object.pk %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" name="post_id" value="{{object.id}}" class="btn btn-primary btn-sm">Like</button>
+    </form>
 </article>
     
 {% endblock content %}
