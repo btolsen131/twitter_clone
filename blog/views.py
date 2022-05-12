@@ -1,10 +1,14 @@
 from django.shortcuts import render, get_object_or_404
+from flask import request
 from .models import Post
 from django.views.generic import ListView, DetailView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.shortcuts import redirect
+from users.models import Profile
+
 
 def home(request):
     context = {
@@ -24,15 +28,6 @@ class PostListView(ListView):
     ordering = ['-date_posted']
     paginate_by = 8
 
-class UserPostListView(ListView):
-    model = Post
-    template_name = 'blog/user_posts.html'
-    context_object_name = 'posts'
-    paginate_by = 8
-
-    def get_queryset(self):
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
-        return Post.objects.filter(author=user).order_by('-date_posted')
 
 class PostDetailView(DetailView):
     model = Post
@@ -58,3 +53,6 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 def about(request):
     return render(request, 'blog/about.html', {'title':'About'})
+
+
+
