@@ -8,14 +8,16 @@
                 <h2 class="account-heading"> {{ user.username }}</h2>
                 <p class="text-secondary"> {{ user.email }}</p>
             </div>
-        </div>
         {% if user.profile.name %}
-        <h3 class="py-4">{{user.profile.name}}</h3>
+        <h3>Name</h3>
+        <p> {{user.profile.name}}</p>
         {% endif %}
         {% if user.profile.bio %}
-        <h3 class="py-4">{{user.profile.bio}}</h3>
+        <h3 class="py-4">Bio</h3>
+          <p>{{user.profile.bio}}</p>
         {% endif %}
-
+        </div>
+        {% if profile.user == request.user %}
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <fieldset class="form-group">
@@ -27,6 +29,7 @@
                 <button class="btn btn-outline-info" type="submit"> Update profile</button>
             </div>
         </form>
+        {% endif %}
         
         <div class="mt-5">
         {% for post in posts %}
