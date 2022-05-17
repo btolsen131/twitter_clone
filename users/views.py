@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from flask import request
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View, UpdateView
@@ -28,68 +29,51 @@ class ProfileView(View):
         profile = Profile.objects.get(pk=pk)
         user = profile.user
         posts = Post.objects.filter(author=user).order_by('-date_posted')
-        u_form = UserUpdateForm(request.POST, instance=request.user)
-        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-        if request.method == "POST":
-            u_form = UserUpdateForm(request.POST, instance=request.user)
-            p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-            if u_form.is_valid() and p_form.is_valid():
-                u_form.save()
-                p_form.save()
-                messages.success(request, f'Account updated!')
-                return redirect('profile')
+        
+        followers = profile.followers.all()
+        num_of_followers = len(followers)
+        if len(followers) == 0:
+            is_following = False
+
+        for follower in followers:
+            if follower == request.user:
+                is_following = True
+                break
             else:
-                u_form = UserUpdateForm(instance=user)
-                p_form = ProfileUpdateForm(instance=user.profile)
+                is_following = False
 
         context = {
             'user':user,
             'profile':profile,
             'posts':posts,
-            'u_form':u_form,
-            'p_form':p_form,
+            'num_of_followers':num_of_followers,
+            'is_following':is_following,
         }
 
         
         return render(request, 'users/profile.html', context)
 
-
-
-
-""" @login_required
-def profile(request):
+def UpdateProfile(request,pk ):
+    u_form = UserUpdateForm(request.POST, instance=request.user)
+    p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
     if request.method == "POST":
         u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-        if u_form.is_valid() and p_form.is_valid():
-            u_form.save()
-            p_form.save()
+    if u_form.is_valid() and p_form.is_valid():
+        u_form.save()
+        p_form.save()
         messages.success(request, f'Account updated!')
-        return redirect('profile')
+        return redirect('profile', request.user.profile.pk)
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
 
-    context = {
-        'u_form': u_form,
-        'p_form': p_form,
-    }
-
-    def get(self, request, pk, *args, **kwargs):
-        profile = Profile.objects.get(pk=pk)
-        user = profile.user
-        posts = Post.objects.filter(author=user).order_by('-date_posted')
-
-        content = {
-            'user':user,
-            'profile':profile,
-            'posts':posts
+        context= {
+            'u_form':u_form,
+            'p_form':p_form,
         }
-
-    return render(request, 'users/profile.html', context) """
-
+    return render(request, 'users/update_profile.html', context)
     
-
 
 
 class AddFollower(LoginRequiredMixin, View):

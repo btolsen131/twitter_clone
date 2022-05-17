@@ -17,19 +17,27 @@
           <p>{{user.profile.bio}}</p>
         {% endif %}
         </div>
-        {% if profile.user == request.user %}
-        <form method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+          <p>Followers: {{ num_of_followers}}</p>
+          {% if user == request.user%}
+          <form method="POST" action="{% url 'update-profile' user.profile.pk %}">
             {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4"> Profile info </legend>
-                    {{ u_form|crispy }}
-                    {{ p_form|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit"> Update profile</button>
-            </div>
-        </form>
-        {% endif %}
+            <button class="btn btn-outline-success" type="submit">Update profile</button>
+          </form>
+          {% else %}
+            {% if is_following %}
+            <form method="POST" action="{% url 'remove-follower' user.profile.pk %}">
+              {% csrf_token %}
+              <button class="btn btn-outline-danger" type="submit">Unfollow</button>
+            </form>
+            {% else %}
+              <form method="POST" action="{% url 'add-follower' user.profile.pk %}">
+               {% csrf_token %}
+                <button class="btn btn-outline-success" type="submit">Follow</button>
+             </form>
+             {% endif %}
+          {% endif %}
+        </div>
         
         <div class="mt-5">
         {% for post in posts %}
