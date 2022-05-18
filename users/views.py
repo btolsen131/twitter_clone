@@ -30,8 +30,11 @@ class ProfileView(View):
         user = profile.user
         posts = Post.objects.filter(author=user).order_by('-date_posted')
         
+        following = Profile.objects.filter(followers__in=[user])
+        num_of_following = len(following)
         followers = profile.followers.all()
         num_of_followers = len(followers)
+        
         if len(followers) == 0:
             is_following = False
 
@@ -46,6 +49,7 @@ class ProfileView(View):
             'user':user,
             'profile':profile,
             'posts':posts,
+            'num_of_following': num_of_following,
             'num_of_followers':num_of_followers,
             'is_following':is_following,
         }
@@ -53,7 +57,7 @@ class ProfileView(View):
         
         return render(request, 'users/profile.html', context)
 
-def UpdateProfile(request,pk ):
+def UpdateProfile(request, pk):
     u_form = UserUpdateForm(request.POST, instance=request.user)
     p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
     if request.method == "POST":
@@ -77,17 +81,19 @@ def UpdateProfile(request,pk ):
 
 
 class AddFollower(LoginRequiredMixin, View):
-    def post(self, request, pk, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        pk = self.kwargs.get('username')
         profile = Profile.objects.get(pk=pk)
         profile.followers.add(request.user)
 
-        return redirect('profile', username=profile.username)
+        return redirect('profile', pk=profile.pk)
 
 class RemoveFollower(LoginRequiredMixin, View):
-    def post(self, request, pk, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        pk = self.kwargs.get('username')
         profile = Profile.objects.get(pk=pk)
         profile.followers.remove(request.user)
-
-        return redirect('profile', username=profile.username)
+        
+        return redirect('profile', pk=profile.pk)
 
 

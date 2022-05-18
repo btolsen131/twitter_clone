@@ -18,7 +18,8 @@
         {% endif %}
         </div>
         <div class="mb-3">
-          <p>Followers: {{ num_of_followers}}</p>
+          <p>Followers: {{ num_of_followers }}</p>
+          <p>Following: {{ num_of_following }}</p>
           {% if user == request.user%}
           <form method="POST" action="{% url 'update-profile' user.profile.pk %}">
             {% csrf_token %}
