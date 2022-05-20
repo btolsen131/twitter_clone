@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from flask import request
 from .models import Post
-from django.views.generic import ListView, DetailView, CreateView, DeleteView
+from django.views.generic import View, DetailView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
@@ -10,30 +10,39 @@ from django.shortcuts import redirect
 from users.models import Profile
 
 
-def home(request):
-    context = {
-        'posts':Post.objects.all()
-    }
-    return render(request, 'blog/home.html', context) 
+
 
 def LikeView(request, pk):
     post = get_object_or_404(Post, id=request.POST.get('post_id'))
     post.likes.add(request.user)
     return HttpResponseRedirect(reverse('post-detail', args=[str(pk)]))
 
-class PostListView(ListView):
-    model = Post
-    template_name = 'blog/home.html'
-    context_object_name = 'posts'
-    ordering = ['-date_posted']
-    paginate_by = 8
+class PostListView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        logged_in_user = request.user
+        posts = Post.objects.filter(author__profile__followers__in=[logged_in_user]).order_by('-date_posted')
 
+        context = {
+            'posts':posts,
+        }
+        return render(request, 'blog/home.html', context)
 
 class PostDetailView(DetailView):
     model = Post
-    
-    
+    def post(self, request, pk, *args, **kwargs):
+        post = Post.object.get(pk=pk)
 
+        is_liked = False
+        for like in post.likes.all():
+            if like == request.user:
+                is_liked = True
+                break
+        context = {
+            'is_liked':is_liked,
+        }
+        return render(request, 'blog/post_detail.html', context)
+
+    
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     fields = ['content']
@@ -54,5 +63,21 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 def about(request):
     return render(request, 'blog/about.html', {'title':'About'})
 
+class AddLike(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        post = Post.objects.get(pk=pk)
+        
+        is_liked = False
+        
+        for like in post.likes.all():
+            if like == request.user:
+                is_liked = True
+                break
+        if not is_liked:
+            post.likes.add(request.user)
+
+        if is_liked:
+            post.likes.remove(request.user)
+        return HttpResponseRedirect(reverse('post-detail', args=[str(pk)]))
 
 

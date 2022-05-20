@@ -9,6 +9,11 @@
             <small class="text-muted">{{ post.date_posted|date:'F d, Y' }}</small></h6>
           </div>
           <h5><p class="article-content">{{ post.content }}</p></h5>
+          <!-- <form action="{% url 'like_post' post.author.pk %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" name="post_id" value="{{post.pk}}" class="btn btn-primary btn-sm">
+                Like</button> - {{ post.total_likes }} Likes
+        </form> -->
           <h6><small><a class="text-muted" href="{% url 'post-detail' post.id %}">See post details</a></h6>
         </div>
       </article>

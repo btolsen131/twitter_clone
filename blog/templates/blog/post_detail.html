@@ -13,11 +13,19 @@
         </div>
         <p class="article-content">{{ object.content }}</p>
     </div>
+    {% if is_liked%}
+    <form action="{% url 'like_post' object.pk %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" name="post_id" value="{{object.id}}" class="btn btn-primary btn-sm">
+            Unlike</button> - {{ object.total_likes }} Likes
+    </form>
+    {% else %} 
     <form action="{% url 'like_post' object.pk %}" method="POST">
         {% csrf_token %}
         <button type="submit" name="post_id" value="{{object.id}}" class="btn btn-primary btn-sm">
             Like</button> - {{ object.total_likes }} Likes
     </form>
+    {% endif %} 
 </article>
     
 {% endblock content %}
