@@ -8,22 +8,28 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import redirect
 from users.models import Profile
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 
 
-
-def LikeView(request, pk):
-    post = get_object_or_404(Post, id=request.POST.get('post_id'))
-    post.likes.add(request.user)
-    return HttpResponseRedirect(reverse('post-detail', args=[str(pk)]))
+# def LikeView(request, pk):
+#     post = get_object_or_404(Post, id=request.POST.get('post_id'))
+#     post.likes.add(request.user)
+#     return HttpResponseRedirect(reverse('post-detail', args=[str(pk)]))
 
 class PostListView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         logged_in_user = request.user
         posts = Post.objects.filter(author__profile__followers__in=[logged_in_user]).order_by('-date_posted')
+        
+        paginator = Paginator(posts, 8)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
 
         context = {
-            'posts':posts,
+            
+            'page_obj':page_obj
         }
         return render(request, 'blog/home.html', context)
 
@@ -79,5 +85,16 @@ class AddLike(LoginRequiredMixin, View):
         if is_liked:
             post.likes.remove(request.user)
         return HttpResponseRedirect(reverse('post-detail', args=[str(pk)]))
+
+class UserSearch(View):
+    def get(self, request, * args, **kwargs):
+        query = self.request.GET.get('query')
+        profile_list = Profile.objects.filter(Q(user__username__icontains=query))
+
+        context =  {
+            'profile_list':profile_list
+        }
+
+        return render(request, 'blog/search.html', context)
 
 
