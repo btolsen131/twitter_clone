@@ -28,7 +28,6 @@ class PostListView(LoginRequiredMixin, View):
         page_obj = paginator.get_page(page_number)
 
         context = {
-            
             'page_obj':page_obj
         }
         return render(request, 'blog/home.html', context)
@@ -37,16 +36,7 @@ class PostDetailView(DetailView):
     model = Post
     def post(self, request, pk, *args, **kwargs):
         post = Post.object.get(pk=pk)
-
-        is_liked = False
-        for like in post.likes.all():
-            if like == request.user:
-                is_liked = True
-                break
-        context = {
-            'is_liked':is_liked,
-        }
-        return render(request, 'blog/post_detail.html', context)
+        return render(request, 'blog/post_detail.html')
 
     
 class PostCreateView(LoginRequiredMixin, CreateView):
