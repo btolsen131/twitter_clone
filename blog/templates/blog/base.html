@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_tags %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,6 +34,9 @@
                 <a class="nav-item nav-link" href="{% url 'profile' request.user.profile.pk %}">Profile </a>
                 <a class="nav-item nav-link" href="{% url 'logout' %}">Logout </a>
                 <a class="nav-item nav-link" href="{% url 'post-create' %}">New Post</a>
+                <div class="nav-item">
+                  {% show_notifications %}
+                </div>
                 {% else %}
                 <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
                 <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
