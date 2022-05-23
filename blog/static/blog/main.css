@@ -96,7 +96,7 @@ body {
   display: inline-block;
 }
 .dropdown-content{
-  position: relative;
+  position: absolute;
   background-color: #f1f1f1;
   min-width: 325px;
   box-shadow: 0px 8px 8px 0px rgba(0,0,0,0.2);
@@ -121,9 +121,9 @@ body {
 }
 
 .dropdown-item-close{
-  position:absoltue;
-  top:0;
-  right:0;
+  position:absolute;
+  top: 0;
+  right: 0;
   font-size: 1.8rem;
   padding-right: 5px;
   transition: 0.3s;
