@@ -1,16 +1,16 @@
 <div class="dropdown">
-    <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="badge bg-primary notification-badge" onClick="showNotifications()">
         {{ notifications.count }}
-    </button>
-    <div class="dropdown-menu" id="notification-container">
+    </span>
+    <div class="dropdown-content d-none" id="notification-container">
         {% for notification in notifications %}
             {% if notification.notification_type == 1 %}
-                <div class="dropdown-item">
+                <div class="dropdown-item-parent">
                     <a href="#">@{{ notification.from_user }} liked your post </a>
                     <span class="dropdown-item-close">&times;</span>
                 </div>    
             {% else %}
-            <div class="dropdown-item">
+            <div class="dropdown-item-parent">
                 <a href="#">@{{ notification.from_user }} has followed you </a>
                 <span class="dropdown-item-close">&times;</span>
             </div>
