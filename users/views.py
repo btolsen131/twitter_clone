@@ -6,8 +6,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View, UpdateView
 from django.contrib.auth.decorators import login_required
 from .models import Profile
-from blog.models import Post
+from blog.models import Post, Notification
 from django.contrib.auth.models import User
+
 
 
 
@@ -86,6 +87,8 @@ class AddFollower(LoginRequiredMixin, View):
         profile = Profile.objects.get(pk=pk)
         profile.followers.add(request.user)
 
+        notification = Notification.objects.create(notification_type=2, from_user=request.user, to_user=profile.user)
+        
         return redirect('profile', pk=profile.pk)
 
 class RemoveFollower(LoginRequiredMixin, View):

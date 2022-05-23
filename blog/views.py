@@ -1,10 +1,12 @@
+import profile
+from venv import create
 from django.shortcuts import render, get_object_or_404
 from flask import request
-from .models import Post
+from .models import Notification, Post
 from django.views.generic import View, DetailView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.shortcuts import redirect
 from users.models import Profile
@@ -13,10 +15,7 @@ from django.db.models import Q
 
 
 
-# def LikeView(request, pk):
-#     post = get_object_or_404(Post, id=request.POST.get('post_id'))
-#     post.likes.add(request.user)
-#     return HttpResponseRedirect(reverse('post-detail', args=[str(pk)]))
+
 
 class PostListView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
@@ -63,6 +62,7 @@ class AddLike(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         post = Post.objects.get(pk=pk)
         
+        
         is_liked = False
         
         for like in post.likes.all():
@@ -71,6 +71,7 @@ class AddLike(LoginRequiredMixin, View):
                 break
         if not is_liked:
             post.likes.add(request.user)
+            notification = Notification.objects.create(notification_type=1, from_user=request.user, to_user=post.author, post=post)
 
         if is_liked:
             post.likes.remove(request.user)
@@ -87,4 +88,32 @@ class UserSearch(View):
 
         return render(request, 'blog/search.html', context)
 
+class PostNotification(View):
+    def get(self, request, notification_pk, post_pk, *args, **kwargs):
+        notification = Notification.objects.get(pk=notification_pk)
+        post = Post.objects.get(pk=post_pk)
+
+        notification.user_has_seen = True
+        notification.save()
+        
+        return redirect('post-detail', pk=post_pk)
+
+class FollowNotification(View):
+    def get(self, request, notification_pk, profile_pk, *args, **kwargs):
+        notification = Notification.objects.get(pk=notification_pk)
+        profile = Profile.objects.get(pk=profile_pk)
+        
+        notification.user_has_seen = True
+        notification.save()
+        
+        return redirect('profile', pk=profile_pk)
+
+class RemoveNotification(View):
+    def delete(self, request, notification_pk, *args, **kwargs):
+        notification = Notification.objects.get(pk=notification_pk)
+
+        notification.user_has_seen = True
+        notification.save()
+        
+        return HttpResponse('Success', context_type='text/plain')
 
