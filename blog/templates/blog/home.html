@@ -1,6 +1,7 @@
 {% extends "blog/base.html" %}
 {% block content %}    
     {% for post in page_obj %}
+    
     <article class="media content-section">
       <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
         <div class="media-body">
@@ -31,7 +32,7 @@
       <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
       <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
       {%endif %}
-
+    
     
 {% endblock content %}
 
