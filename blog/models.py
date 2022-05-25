@@ -22,7 +22,7 @@ class Post(models.Model):
         return self.likes.count()
 
 class Notification(models.Model):
-    # 1 = like 2 = follow
+    # 1 = like 2 = follow 3 = comment
     notification_type = models.IntegerField()
     to_user = models.ForeignKey(User, related_name='notification_to', on_delete=models.CASCADE, null=True)
     from_user = models.ForeignKey(User, related_name='notification_from', on_delete=models.CASCADE, null=True)
