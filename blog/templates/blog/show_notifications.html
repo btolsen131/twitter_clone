@@ -9,6 +9,11 @@
                     <a href="{% url 'post-notification' notification.pk notification.post.pk %}">@{{ notification.from_user }} liked your post </a>
                     <span class="dropdown-item-close" onclick="removeNotification(`{% url 'notification-delete' notification.pk%}`, `{{ request.path }}`)">&times;</span>
                 </div>    
+            {% elif notification.notification_type == 3%}
+            <div class="dropdown-item-parent">
+                <a href="{% url 'post-notification' notification.pk notification.post.pk %}">@{{ notification.from_user }} commented on your post </a>
+                <span class="dropdown-item-close" onclick="removeNotification(`{% url 'notification-delete' notification.pk%}`, `{{ request.path }}`)">&times;</span>
+            </div>  
             {% else %}
             <div class="dropdown-item-parent">
                 <a href="{% url 'follow-notification' notification.pk notification.from_user.profile.pk%}">@{{ notification.from_user }} has followed you </a>

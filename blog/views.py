@@ -57,6 +57,8 @@ class PostDetailView(View):
 
         comments = Comment.objects.filter(post=post).order_by('-created_on')
 
+        notification = Notification.objects.create(notification_type=3, from_user=request.user, to_user=post.author, post=post)
+       
         context = {
             'post':post,
             'comments':comments
@@ -88,7 +90,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('blog-home')
     template_name = 'blog/post_confirm_delete.html'
-    
+
     def test_func(self):
         post = self.get_object()
         if self.request.user == post.author:
