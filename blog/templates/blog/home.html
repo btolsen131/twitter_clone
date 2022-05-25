@@ -2,7 +2,7 @@
 {% block content %}    
     {% for post in page_obj %}
     
-    <article class="media content-section">
+    <article class="media content-section position-relative">
       <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
         <div class="media-body">
           <div class="article-metadata">
@@ -12,7 +12,7 @@
           <h5><p class="article-content">{{ post.content }}</p></h5>
           <h6>{{ post.total_likes }} Likes</h6>
         
-          <h6><small><a class="text-muted" href="{% url 'post-detail' post.id %}">See post details</a></h6>
+          <h6><small><a class="text-muted stretched-link" href="{% url 'post-detail' post.id %}">See post details</a></h6>
         </div>
       </article>
     {% endfor %}

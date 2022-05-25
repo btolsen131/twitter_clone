@@ -1,4 +1,6 @@
 from email.policy import default
+from pdb import post_mortem
+from ssl import create_default_context
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -28,4 +30,8 @@ class Notification(models.Model):
     date = models.DateTimeField(default=timezone.now)
     user_has_seen = models.BooleanField(default=False)
 
-
+class Comment(models.Model):
+    comment = models.CharField(max_length=140)
+    created_on = models.DateTimeField(default=timezone.now)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)

@@ -1,32 +1,52 @@
 {% extends "blog/base.html" %}
-{% block content %}    
-    
+{% block content %}  
+{% load crispy_forms_tags %}  
+
 <article class="media content-section">
-    <img class="rounded-circle article-image" src="{{ object.author.profile.image.url }}">
+    <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
     <div class="media-body">
         <div class="article-metadata">
-        <a class="mr-2" href="{% url 'profile' object.author.profile.pk %}">{{ object.author }}</a>
-        <small class="text-muted">{{ object.date_posted }}</small>
-        {% if object.author == user %}
-            <a class="btn btn-sm mt-1 mb-1 btn-outline-danger" href="{% url 'post-delete' object.id %}">Delete</a>
+        <a class="mr-2" href="{% url 'profile' post.author.profile.pk %}">{{ post.author }}</a>
+        <small class="text-muted">{{ post.date_posted }}</small>
+        {% if post.author == user %}
+            <a class="btn btn-sm mt-1 mb-1 btn-outline-danger" href="{% url 'post-delete' post.pk %}">Delete</a>
         {% endif %}
         </div>
-        <p class="article-content">{{ object.content }}</p>
+        <p class="article-content">{{ post.content }}</p>
     </div>
 
-    <form action="{% url 'like-post' object.pk %}" method="POST">
+    <form action="{% url 'like-post' post.pk %}" method="POST">
         {% csrf_token %}
-        <button type="submit" name="post_id" value="{{object.id}}" class="btn btn-primary btn-sm">
-            {% if request.user in object.likes.all %}
+        <button type="submit" name="post_id" value="{{post.id}}" class="btn btn-primary btn-sm">
+            {% if request.user in post.likes.all %}
             Unlike
             {% else %}
             Like
             {% endif %}
-        </button> - {{ object.total_likes }} Likes
+        </button> - {{ post.total_likes }} Likes
     </form>
-    
-   
-     
 </article>
+{% for comment in comments %}
+<div class="row justify-content-center mt-3 mb-5">
+    <div class="col-md-5 col-sm-12 border-bottom">
+        <a class="mr-2" href="{% url 'profile' comment.author.profile.pk %}">{{ comment.author }}</a>
+        {% if request.user == comment.author %}
+            <a class="btn btn-sm mt-1 mb-1 btn-outline-danger" href="{% url 'comment-delete' post.pk comment.pk %}">Delete</a>
+        {% endif %}
+        <p>{{ comment.comment }}</p>
+    </div>
+</div>
+{% endfor %}
+<div class="row justify-content-center mt-3">
+    <div class="col-md-5 col-sm-12">
+        <form method="POST">
+            {% csrf_token %} 
+            {{ form | crispy }}
+            <div class="d-grip gap-2">
+                <button class="btn btn-outline-success mt-1">Comment</button>
+            </div>
+        </form>
+    </div>
+</div>
  
 {% endblock content %}
