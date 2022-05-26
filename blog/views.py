@@ -13,6 +13,7 @@ from users.models import Profile
 from django.core.paginator import Paginator
 from .forms import CommentForm, ThreadForm, MessageForm
 from django.db.models import Q
+from django.contrib import messages
 
 
 class PostListView(LoginRequiredMixin, View):
@@ -202,6 +203,7 @@ class CreateThread(View):
                 thread.save()
                 return redirect('thread', pk=thread.pk) 
         except:
+            messages.warning(request, 'User not found.')
             return redirect('create-thread')
 
 class ThreadView(View):

@@ -67,7 +67,7 @@ def UpdateProfile(request, pk):
     if u_form.is_valid() and p_form.is_valid():
         u_form.save()
         p_form.save()
-        messages.success(request, f'Account updated!')
+        messages.success(request, 'Account updated!')
         return redirect('profile', request.user.profile.pk)
     else:
         u_form = UserUpdateForm(instance=request.user)
